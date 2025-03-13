@@ -1,0 +1,26 @@
+<script setup>
+const c = 15;
+const a = `Tamal`;
+const b = `Saha`;
+const d = `${c}`;
+</script>
+
+<template>
+  <div class="container">
+    <div>{{ a }}</div>
+    <div> | </div>
+    <div> {{ b }}</div>
+    <div> | </div>
+    <div> {{ d }} </div>
+  </div>
+</template>
+
+<style>
+.container{
+  width: 50%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+}
+
+</style>
