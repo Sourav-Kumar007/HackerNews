@@ -10,9 +10,9 @@ import { RouterLink,RouterView } from 'vue-router';
             </div>
             <div class="options">
                 <RouterLink active-class="active" class="bg" to="/newstories"> New </RouterLink>
-                <span> Best </span>
-                <span> Show </span>
-                <span> Ask </span>
+                <RouterLink active-class="active" class="bg" to="/beststories"> Best </RouterLink>
+                <RouterLink active-class="active" class="bg" to="/showstories"> Show </RouterLink>
+                <RouterLink active-class="active" class="bg" to="/askstories"> Ask </RouterLink>
                 <RouterLink active-class="active" class="bg" to="/jobstories"> Job </RouterLink>
             </div>
         </header>
