@@ -4,28 +4,33 @@ import { computed, onMounted, ref } from 'vue';
 import { watch } from 'vue';
 import axios from 'axios';
 import Nav from './nav.vue';
-
+const Time = ref([]);
 const store = useStore();
 const comments = computed(() => store.state.kids);
 const index = computed(() => store.state.index);
 const footerOpt = computed(() => store.state.footerOpt);
 const allComment = ref([]);
+
 const fetchApi = () => {
     console.log('fetch api');
+    Time.value = [];
     comments.value.forEach(async id => {
         const api = await axios.get(`https://hacker-news.firebaseio.com/v0/item/${id}.json`);
         allComment.value.push(api.data);
+        store.commit('timeCal' , api.data.time);
+        Time.value.push(`Created ${store.state.time} ${store.state.when} ago`);
     });
 };
 onMounted(() => {
     if (comments.value) {
         fetchApi();
-        
     }
 });
 watch(index, (newIndex) => {
     console.log("Index changed:", newIndex);
 });
+
+
 </script>
 
 <template>
@@ -54,7 +59,7 @@ watch(index, (newIndex) => {
                 <div class="top">
                     <div> by {{ item.by }}</div>
                     <div> | </div>
-                    <div> {{ item.time }}</div>
+                    <div> {{ Time[index] }}</div>
                 </div>
                 <div class="middle">
                     <div v-html="item.text"></div>
@@ -94,7 +99,7 @@ watch(index, (newIndex) => {
 }
 .top{
     display: flex;
-    width: 20%;
+    width: 30%;
     justify-content: space-between;
 }
 </style>
