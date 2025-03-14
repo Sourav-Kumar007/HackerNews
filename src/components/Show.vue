@@ -4,26 +4,26 @@ import Nav from './nav.vue';
 import axios from 'axios';
 import { ref, watch } from 'vue';
 let res, tempArr, time, when;
-const stories = ref([]);
+const obj = ref({});
 const currentPage = ref(0);
-const text = ref([]);
 const route = useRoute();
+const footerOption = ref([]);
 
 function timeCal(Unix) {
     let second = Date.now();
     second /= 1000;
     second = Math.floor(second);
     second -= Unix;
-    console.log('seconds ' , second);
+    console.log('seconds ', second);
     if (second < 60) {
         time = second;
         when = 'seconds';
     }
-    else if((second / 60) < 60){
+    else if ((second / 60) < 60) {
         time = Math.floor(second / 60);
         when = time == 1 ? 'minute' : 'minutes';
     }
-    else if((second / (60 * 60)) < 24){
+    else if ((second / (60 * 60)) < 24) {
         time = Math.floor(second / 3600);
         when = time == 1 ? 'hour' : 'hours';
     }
@@ -37,22 +37,24 @@ const fetchApi = async () => {
     res = api.data;
 };
 
-watch([currentPage,route], async () => {
+watch([currentPage, route], async () => {
     await fetchApi();
     tempArr = res.slice(currentPage.value, currentPage.value + 25);
-    stories.value = [];
-    text.value = [];
+    footerOption.value = [];
     tempArr.forEach(async (id) => {
         console.log('haha');
-        const obj = await axios.get(`https://hacker-news.firebaseio.com/v0/item/${id}.json`);
-        stories.value.push(obj.data);
-        let tempText = `  ${obj.data.score}   |   by ${obj.data.by}`;
-        if (obj.data.kids) {
-            tempText += `   |   ${obj.data.kids.length} Comments`;
-        }
-        timeCal(obj.data.time);
-        tempText += `   |    Created ${time} ${when} ago`;
-        text.value.push(tempText);
+        obj.value = await axios.get(`https://hacker-news.firebaseio.com/v0/item/${id}.json`);
+        timeCal(obj.value.data.time);
+        footerOption.value.push({
+            title: `${obj.value.data.title}`,
+            score: `${obj.value.data.score}`,
+            by: `by ${obj.value.data.by}`,
+            comments: obj.value.data.descendants !== undefined &&  obj.value.data.descendants !== 0? `${obj.value.data.descendants} Comments` : ``,
+            created: `Created ${time} ${when} ago`,
+            slash: `|`,
+            url: obj.value.data.url,
+        });
+        console.log(footerOption.value[0].comments);
     });
 }, { immediate: true });
 
@@ -70,34 +72,52 @@ function forwarPage() {
 </script>
 
 <template>
-    <Nav/>
+    <Nav />
     <br>
     <main>
-        <div v-for="(item, index) in stories" :key="item.id" @click="random">
-        <div class="card">
-            <div class="title">
-                <a :href="item.url" target="_blank"> {{ item.title }}</a>
-            </div>
-            <div>
-                <p class="preserve-space"> {{ text[index] }}</p>
+        <div v-for="(item, index) in footerOption" :key="item.id" @click="random">
+            <div class="card">
+                <div class="title">
+                    <a v-show="footerOption[index].url !== undefined" :href="footerOption[index].url" target="_blank" > {{ footerOption[index].title
+                        }}</a>
+                        <p v-show="footerOption[index].url === undefined" class="titleBar">  {{ footerOption[index].title }}</p>
+                </div>
+                <div class="footerOpt">
+                    <div>{{ footerOption[index].score }}</div>
+                    <div>{{ footerOption[index].slash }}</div>
+                    <div>{{ footerOption[index].by }}</div>
+                    <div>{{ footerOption[index].slash }}</div>
+                    <div v-show="footerOption[index].comments.length !== 0">{{ footerOption[index].comments }}</div>
+                    <div v-show="footerOption[index].comments.length !== 0">{{ footerOption[index].slash }}</div>
+                    <div>{{ footerOption[index].created }}</div>
+                </div>
             </div>
         </div>
-    </div>
-    <button @click="backPage"> Back </button>
-    <button @click="forwarPage"> Forward </button>
+        <button @click="backPage"> Back </button>
+        <button @click="forwarPage"> Forward </button>
     </main>
 </template>
 
 <style>
-.preserve-space {
-    white-space: pre;
-}
-
 .card {
-
-    box-shadow: 0 2px 1px 0 rgba(0, 0, 0, 0.2);
-    transition: 0.3s;
+    display: flex;
+    height: 90px;
+    box-shadow: 2px 4px 8px 0 rgba(0, 0, 0, 0.2);
+    /* transition: .1s; */
     background-color: #F9FAFA;
+    flex-direction: column;
+    justify-content: space-evenly;
+}
+.titleBar{
+    font-size: 20px;
+    color : #4D606D;
+    font-weight: 400;
+}
+.footerOpt {
+    width: 60%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
 }
 
 .title a {
@@ -126,8 +146,6 @@ a:active {
 }
 
 .card:hover {
-    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+    box-shadow: 2px 8px 16px 0 rgba(0, 0, 0, 0.2);
 }
-
-
 </style>
