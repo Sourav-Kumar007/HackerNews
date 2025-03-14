@@ -1,8 +1,12 @@
 <script setup>
 import { useRoute } from 'vue-router';
+import { RouterLink } from 'vue-router';
+import Card from './Card.vue';
 import Nav from './nav.vue';
 import axios from 'axios';
 import { ref, watch } from 'vue';
+import { useStore } from 'vuex';
+const store = useStore();
 let res, tempArr, time, when;
 const obj = ref({});
 const currentPage = ref(0);
@@ -14,7 +18,6 @@ function timeCal(Unix) {
     second /= 1000;
     second = Math.floor(second);
     second -= Unix;
-    console.log('seconds ', second);
     if (second < 60) {
         time = second;
         when = 'seconds';
@@ -36,13 +39,14 @@ const fetchApi = async () => {
     const api = await axios.get(`https://hacker-news.firebaseio.com/v0/${route.params.stories}.json`);
     res = api.data;
 };
-
+function passKids(arr){
+    store.commit('setkids' , arr);
+}
 watch([currentPage, route], async () => {
     await fetchApi();
     tempArr = res.slice(currentPage.value, currentPage.value + 25);
     footerOption.value = [];
     tempArr.forEach(async (id) => {
-        console.log('haha');
         obj.value = await axios.get(`https://hacker-news.firebaseio.com/v0/item/${id}.json`);
         timeCal(obj.value.data.time);
         footerOption.value.push({
@@ -53,8 +57,9 @@ watch([currentPage, route], async () => {
             created: `Created ${time} ${when} ago`,
             slash: `|`,
             url: obj.value.data.url,
+            kids : obj.value.data.kids === undefined ? [] : obj.value.data.kids,
         });
-        console.log(footerOption.value[0].comments);
+        // store.commit('setopt' , footerOption);
     });
 }, { immediate: true });
 
@@ -82,12 +87,13 @@ function forwarPage() {
                         }}</a>
                         <p v-show="footerOption[index].url === undefined" class="titleBar">  {{ footerOption[index].title }}</p>
                 </div>
+                
                 <div class="footerOpt">
                     <div>{{ footerOption[index].score }}</div>
                     <div>{{ footerOption[index].slash }}</div>
                     <div>{{ footerOption[index].by }}</div>
                     <div>{{ footerOption[index].slash }}</div>
-                    <div v-show="footerOption[index].comments.length !== 0">{{ footerOption[index].comments }}</div>
+                    <div v-show="footerOption[index].comments.length !== 0" @click="passKids(footerOption[index].kids)"> <RouterLink to="/Comment">{{ footerOption[index].comments }}</RouterLink></div>
                     <div v-show="footerOption[index].comments.length !== 0">{{ footerOption[index].slash }}</div>
                     <div>{{ footerOption[index].created }}</div>
                 </div>
@@ -101,9 +107,10 @@ function forwarPage() {
 <style>
 .card {
     display: flex;
-    height: 90px;
+    min-height: 100px;
+    overflow: hidden;
     box-shadow: 2px 4px 8px 0 rgba(0, 0, 0, 0.2);
-    /* transition: .1s; */
+    transition: .1s;
     background-color: #F9FAFA;
     flex-direction: column;
     justify-content: space-evenly;

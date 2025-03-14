@@ -47,7 +47,7 @@ header {
     font-size: 20px;
 }
 main{
-    width:60%;
+    width:65%;
     margin : 0 auto;
 }
 header .options {
