@@ -29,16 +29,16 @@ const toggleComments = async()=>{
 
 <template>
     <div>
-        <div class="top">
+        <div class="top" v-if="commentId.by">
             <div> by {{ commentInfo.by}}</div>
             <div> | </div>
             <div> Created {{ store.state.time }} {{ store.state.when }} ago </div>
         </div>
-        <div class="middle">
+        <div class="middle" v-if="commentInfo.text">
             <div v-html="commentInfo.text"></div>
         </div>
-        <div class="end" @click="toggleComments">
-            {{ showKids ? 'Hide Comments [-]' : 'Show Comments [+]' }}
+        <div v-if="commentInfo.kids" class="end" @click="toggleComments">
+            {{ showKids ? `Hide Comments [-]` : `Show Comments [+${commentInfo.kids.length}]` }}
         </div>
         <div v-if="showKids" class="nested">
             <nestedComment class="card" v-for="item in kids" :key="item" :commentId="item"/>
