@@ -19,10 +19,10 @@ const toggleComments = async()=>{
     }
     showKids.value = true;
     if(commentInfo.value.kids){
-        commentInfo.value.kids.forEach( async(id) => {
-            const res = await axios.get(`https://hacker-news.firebaseio.com/v0/item/${id}.json`);
-            kids.value.push(res.data.id);
-        });
+        const responses = await Promise.all(
+            commentInfo.value.kids.map(id => axios.get(`https://hacker-news.firebaseio.com/v0/item/${id}.json`))
+        );
+        kids.value = responses.map(res => res.data.id);
     }
 };
 </script>
