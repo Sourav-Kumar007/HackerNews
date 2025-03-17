@@ -1,3 +1,5 @@
+<!-- this page is for showing all the stories related to specific types such as best stories , newstories, topstories like that -->
+
 <script setup>
 import { useStore } from 'vuex';
 import { computed } from 'vue';

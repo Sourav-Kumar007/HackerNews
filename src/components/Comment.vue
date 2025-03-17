@@ -1,4 +1,8 @@
+<!-- ekhane comments array er moddhe particular story er joto gula 
+comment thakbe segular id store hoye thakbe -->
+
 <script setup>
+import nestedComment from './nestedComment.vue';
 import { useStore } from 'vuex';
 import { computed, onMounted, ref } from 'vue';
 import { watch } from 'vue';
@@ -9,23 +13,7 @@ const store = useStore();
 const comments = computed(() => store.state.kids);
 const index = computed(() => store.state.index);
 const footerOpt = computed(() => store.state.footerOpt);
-const allComment = ref([]);
 
-const fetchApi = () => {
-    console.log('fetch api');
-    Time.value = [];
-    comments.value.forEach(async id => {
-        const api = await axios.get(`https://hacker-news.firebaseio.com/v0/item/${id}.json`);
-        allComment.value.push(api.data);
-        store.commit('timeCal' , api.data.time);
-        Time.value.push(`Created ${store.state.time} ${store.state.when} ago`);
-    });
-};
-onMounted(() => {
-    if (comments.value) {
-        fetchApi();
-    }
-});
 watch(index, (newIndex) => {
     console.log("Index changed:", newIndex);
 });
@@ -55,25 +43,13 @@ watch(index, (newIndex) => {
 
     <main>
         <div class="Gap">
-            <div class="card" v-for="(item, index) in allComment">
-                <div class="top">
-                    <div> by {{ item.by }}</div>
-                    <div> | </div>
-                    <div> {{ Time[index] }}</div>
-                </div>
-                <div class="middle">
-                    <div v-html="item.text"></div>
-                </div>
-                <div class="end">
-                    <div>Show Comments [+?] </div>
-                </div>
-            </div>
+            <nestedComment class="card" v-for="item in comments" :key="item" :commentId="item"/>
         </div>
     </main>
 </template>
 
 
-<style scoped>
+<style >
 .upore{
     width:65%;
     margin:0 auto;
@@ -91,6 +67,7 @@ watch(index, (newIndex) => {
     box-sizing: border-box;
     padding: 10px;
     border: 2px solid transparent;
+    margin-right: 0px;
 }
 .Gap{
     display: flex;  
