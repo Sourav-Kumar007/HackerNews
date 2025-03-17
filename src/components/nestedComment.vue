@@ -29,7 +29,7 @@ const toggleComments = async()=>{
 
 <template>
     <div>
-        <div class="top" v-if="commentId.by">
+        <div class="top">
             <div> by {{ commentInfo.by}}</div>
             <div> | </div>
             <div> Created {{ store.state.time }} {{ store.state.when }} ago </div>
@@ -51,5 +51,8 @@ const toggleComments = async()=>{
 .nested {
     margin-left: 20px;
     margin-right: 0px;
+}
+.end{
+    cursor: pointer;
 }
 </style>

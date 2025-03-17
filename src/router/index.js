@@ -7,7 +7,7 @@ const router = createRouter({
     routes : [
         {
             path : "/",
-            component : nav,
+            redirect : "/topstories",
         },
         {
             path : "/:stories",
