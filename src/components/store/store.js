@@ -9,8 +9,13 @@ export default createStore({
     when:'day',
     isLoading: true,
     story:``,
+    flag: [true,false,false,false,false,false],
   },
   mutations:{
+    setColor(state , index){
+        state.flag = [false,false,false,false,false,false];
+        state.flag[index] = true;
+    },
     setStory(state , payload){
         state.story = payload;
     },
