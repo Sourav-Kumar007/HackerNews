@@ -26,7 +26,7 @@ const fetchApi = async () => {
     res = api.data;
 };
 
-watch(route , ()=>{
+watch(route, () => {
     console.log('dukse');
     curr.value = 1;
 });
@@ -39,18 +39,22 @@ watch([currentPage, route], async () => {
     tempArr = res.slice(currentPage.value, currentPage.value + 25);
     footerOption.value = [];
     tempArr.forEach(async (id) => {
-        obj.value = await axios.get(`https://hacker-news.firebaseio.com/v0/item/${id}.json`);
-        store.commit('timeCal', obj.value.data.time);
-        footerOption.value.push({
-            title: `${obj.value.data.title}`,
-            score: `${obj.value.data.score}`,
-            by: `by ${obj.value.data.by}`,
-            comments: obj.value.data.descendants !== undefined && obj.value.data.descendants !== 0 ? `${obj.value.data.descendants} Comments` : ``,
-            created: `Created ${store.state.time} ${store.state.when} ago`,
-            slash: `|`,
-            url: obj.value.data.url,
-            kids: obj.value.data.kids === undefined ? [] : obj.value.data.kids,
-        });
+        try {
+            obj.value = await axios.get(`https://hacker-news.firebaseio.com/v0/item/${id}.json`);
+            store.commit('timeCal', obj.value.data.time);
+            footerOption.value.push({
+                title: `${obj.value.data.title}`,
+                score: `${obj.value.data.score}`,
+                by: `by ${obj.value.data.by}`,
+                comments: obj.value.data.descendants !== undefined && obj.value.data.descendants !== 0 ? `${obj.value.data.descendants} Comments` : ``,
+                created: `Created ${store.state.time} ${store.state.when} ago`,
+                slash: `|`,
+                url: obj.value.data.url,
+                kids: obj.value.data.kids === undefined ? [] : obj.value.data.kids,
+            });
+        } catch (error) {
+            console.error('error in fetching show.vue ', error);
+        }
     });
     store.commit('setopt', footerOption);
 }, { immediate: true });
@@ -59,8 +63,8 @@ function backPage() {
     if (currentPage.value !== 0) {
         currentPage.value -= 25;
         curr.value = Math.floor(currentPage.value / 25) + 1;
-        console.log('back currpage ' , currentPage.value);
-        console.log('back currcnt ' , curr.value);
+        console.log('back currpage ', currentPage.value);
+        console.log('back currcnt ', curr.value);
     }
 }
 
@@ -91,7 +95,6 @@ function forwarPage() {
 </template>
 
 <style>
-
 .card {
     display: flex;
     min-height: 100px;
@@ -147,10 +150,9 @@ a:active {
 
 .btn {
     display: flex;
-    justify-content: center; 
-    align-items: center; 
-    margin-top: 20px; 
-    gap: 10px; 
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+    gap: 10px;
 }
-
 </style>
