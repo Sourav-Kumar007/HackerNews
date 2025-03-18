@@ -24,6 +24,7 @@ const total = ref(0);
 const fetchApi = async () => {
     const api = await axios.get(`https://hacker-news.firebaseio.com/v0/${route.params.stories}.json`);
     res = api.data;
+    console.log(route.params.stories);
 };
 
 watch(route, () => {
@@ -35,6 +36,7 @@ watch([currentPage, route], async () => {
     store.commit('setTrue');
     await fetchApi();
     store.commit('setFalse');
+    store.commit('setStory' , route.params.stories);
     total.value = Math.ceil(res.length / 25);
     tempArr = res.slice(currentPage.value, currentPage.value + 25);
     footerOption.value = [];
@@ -51,6 +53,7 @@ watch([currentPage, route], async () => {
                 slash: `|`,
                 url: obj.value.data.url,
                 kids: obj.value.data.kids === undefined ? [] : obj.value.data.kids,
+                id: obj.value.data.id,
             });
         } catch (error) {
             console.error('error in fetching show.vue ', error);

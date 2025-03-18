@@ -8,8 +8,12 @@ export default createStore({
     time: 0,
     when:'day',
     isLoading: true,
+    story:``,
   },
   mutations:{
+    setStory(state , payload){
+        state.story = payload;
+    },
     setTrue(state){
         state.isLoading = true;
     },

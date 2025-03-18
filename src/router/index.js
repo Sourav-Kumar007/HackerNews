@@ -12,9 +12,10 @@ const router = createRouter({
         {
             path : "/:stories",
             component : Show,
+            
         },
         {
-            path : "/comment",
+            path : "/:stories/:id/comment",
             component : Comment,
         }
     ]

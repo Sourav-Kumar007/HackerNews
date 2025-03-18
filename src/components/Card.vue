@@ -3,13 +3,14 @@
 <script setup>
 import { useStore } from 'vuex';
 import { computed, ref } from 'vue';
+
 const store = useStore();
 const footerOpt = computed(() => store.state.footerOpt);
 function passKids(arr, index) {
     store.commit('setkids', arr);
     store.commit('setindex', index);
 }
-console.log(store.state.isLoading);
+console.log();
 </script>
 <template>
     <div v-for="(item, index) in footerOpt" :key="item.id" @click="random" v-show="!store.state.isLoading">
@@ -26,7 +27,7 @@ console.log(store.state.isLoading);
                 <div>{{ footerOpt[index].by }}</div>
                 <div>{{ footerOpt[index].slash }}</div>
                 <div v-show="footerOpt[index].comments.length !== 0" @click="passKids(footerOpt[index].kids, index)">
-                    <RouterLink to="/Comment">{{ footerOpt[index].comments }}</RouterLink>
+                    <RouterLink :to="`/${store.state.story}/${item.id}/comment`">{{ footerOpt[index].comments }}</RouterLink>
                 </div>
                 <div v-show="footerOpt[index].comments.length !== 0">{{ footerOpt[index].slash }}</div>
                 <div>{{ footerOpt[index].created }}</div>
