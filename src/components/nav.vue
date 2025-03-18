@@ -1,21 +1,26 @@
 <script setup>
 import { RouterLink,RouterView } from 'vue-router';
-
+import { ref } from 'vue';
+const flag = ref([false,false,false,false,false,false]);
+const changeColor = (index)=>{
+    flag.value = [false,false,false,false,false,false];
+    flag.value[index] = true;
+};
 </script>
 
 <template>
     <div class="container">
        <div class="head">
         <header>
-            <div class="headerContent">
-                <RouterLink active-class="active" class="bg" to="/topstories"> HackerNews </RouterLink>
+            <div class="headerContent" @click="changeColor(0)" :class="flag[0] ? 'bg' : ''">
+                <RouterLink to="/topstories"> HackerNews </RouterLink>
             </div>
             <div class="options">
-                <RouterLink active-class="active" class="bg" to="/newstories"> New </RouterLink>
-                <RouterLink active-class="active" class="bg" to="/beststories"> Best </RouterLink>
-                <RouterLink active-class="active" class="bg" to="/showstories"> Show </RouterLink>
-                <RouterLink active-class="active" class="bg" to="/askstories"> Ask </RouterLink>
-                <RouterLink active-class="active" class="bg" to="/jobstories"> Job </RouterLink>
+                <div @click="changeColor(1)" :class="flag[1] ? 'bg' : ''"><RouterLink to="/newstories"> New </RouterLink></div>
+                <div @click="changeColor(2)" :class="flag[2] ? 'bg' : ''"><RouterLink to="/beststories"> Best </RouterLink></div>
+                <div @click="changeColor(3)" :class="flag[3] ? 'bg' : ''"><RouterLink to="/showstories"> Show </RouterLink></div>
+                <div @click="changeColor(4)" :class="flag[4] ? 'bg' : ''"><RouterLink to="/askstories"> Ask </RouterLink></div>
+                <div @click="changeColor(5)" :class="flag[5] ? 'bg' : ''"><RouterLink to="/jobstories"> Job </RouterLink></div>
             </div>
         </header>
        </div>
@@ -57,11 +62,8 @@ header .options {
     margin-top: 20px;
 }
 .bg{
-    text-decoration: none;
-    color: black;
+    padding:3px;
+    background-color: rgb(47, 220, 233);
 }
-.active{
-    text-decoration: underline;
 
-}
 </style>
