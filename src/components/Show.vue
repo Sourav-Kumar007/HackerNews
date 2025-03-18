@@ -97,7 +97,7 @@ function forwarPage() {
 <style>
 .card {
     display: flex;
-    min-height: 100px;
+    min-height: 95px;
     overflow: hidden;
     box-shadow: 2px 4px 8px 0 rgba(0, 0, 0, 0.2);
     transition: .1s;
