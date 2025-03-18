@@ -32,7 +32,9 @@ watch(route , ()=>{
 });
 watch([currentPage, route], async () => {
     console.log('eta teo dukse');
+    store.commit('setTrue');
     await fetchApi();
+    store.commit('setFalse');
     total.value = Math.ceil(res.length / 25);
     tempArr = res.slice(currentPage.value, currentPage.value + 25);
     footerOption.value = [];

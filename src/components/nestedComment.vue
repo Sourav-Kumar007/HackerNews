@@ -6,6 +6,7 @@ const props = defineProps({ commentId: Number });
 const commentInfo = ref({});
 const kids = ref([]);
 const showKids = ref(false);
+
 const fetchData = async () => {
     const res = await axios.get(`https://hacker-news.firebaseio.com/v0/item/${props.commentId}.json`);
     commentInfo.value = res.data;
@@ -30,9 +31,11 @@ const toggleComments = async()=>{
 <template>
     <div>
         <div class="top">
-            <div> by {{ commentInfo.by}}</div>
+            <div > by {{ commentInfo.by}}</div>
+            <!-- <div v-if="isLoad"> Loading... </div> -->
             <div> | </div>
-            <div> Created {{ store.state.time }} {{ store.state.when }} ago </div>
+            <div > Created {{ store.state.time }} {{ store.state.when }} ago </div>
+            <!-- <div v-if="isLoad"> Loading... </div> -->
         </div>
         <div class="middle" v-if="commentInfo.text">
             <div v-html="commentInfo.text"></div>

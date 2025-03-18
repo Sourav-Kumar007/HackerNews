@@ -2,16 +2,17 @@
 
 <script setup>
 import { useStore } from 'vuex';
-import { computed } from 'vue';
+import { computed,ref } from 'vue';
 const store = useStore();
 const footerOpt = computed(() => store.state.footerOpt);
 function passKids(arr , index){
     store.commit('setkids' , arr);
     store.commit('setindex' , index);
 }
+console.log(store.state.isLoading);
 </script>
 <template>
-    <div v-for="(item, index) in footerOpt" :key="item.id" @click="random">
+    <div v-for="(item, index) in footerOpt" :key="item.id" @click="random" v-show="!store.state.isLoading">
             <div class="card">
                 <div class="title">
                     <a v-show="footerOpt[index].url !== undefined" :href="footerOpt[index].url" target="_blank" > {{ footerOpt[index].title
@@ -29,4 +30,37 @@ function passKids(arr , index){
                 </div>
             </div>
         </div>
+        <div v-for="x in 25" v-show="store.state.isLoading" class="card" >
+            <div>
+                <h3>Loading...</h3>
+            </div>
+           
+            <div class="loadTop">
+                <div>
+                    Loading...
+                </div>
+                <div>
+                    |
+                </div>
+                <div>
+                    Loading...
+                </div>
+                <div>
+                    |
+                </div>
+                <div>
+                    Loading...
+                </div>
+            </div>
+           
+        </div>
 </template>
+
+<style scoped>
+.loadTop{
+    display: flex;
+    flex-direction: colum;
+    justify-content: space-between;
+    width: 40%;
+}
+</style>

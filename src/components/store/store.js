@@ -7,8 +7,15 @@ export default createStore({
     index: 0,
     time: 0,
     when:'day',
+    isLoading: true,
   },
   mutations:{
+    setTrue(state){
+        state.isLoading = true;
+    },
+    setFalse(state){
+        state.isLoading = false;
+    },
     setkids(state , payload){
         state.kids = payload;
     },
