@@ -14,10 +14,6 @@ const router = createRouter({
             component : Show,
             
         },
-        {
-            path : "/:stories/:id/comment",
-            component : Comment,
-        }
     ]
 });
 

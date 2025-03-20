@@ -5,6 +5,7 @@ id k call dibo ar comment gula arekta component e show korbo
 ar ekhane theke just comment er id ta pathay dibo -->
 
 <script setup>
+import nestedComment from './nestedComment.vue';
 import Comment from './Comment.vue';
 import { timeCal } from './composables/usetime';
 import { useRoute } from 'vue-router';
@@ -12,7 +13,7 @@ import { commentId } from './composables/usetime';
 import { RouterLink } from 'vue-router';
 import Nav from './nav.vue';
 import axios from 'axios';
-import { onMounted, ref, watch , computed} from 'vue';
+import { onMounted, ref, watch, computed } from 'vue';
 import { useStore } from 'vuex';
 let res, tempArr;
 const obj = ref({});
@@ -22,11 +23,20 @@ const footerOption = ref([]);
 const curr = ref(1);
 const total = ref(0);
 const isLoading = ref(true);
-
+const commentShow = ref(false);
+const arr = ref([]);
 const fetchApi = async () => {
     const api = await axios.get(`https://hacker-news.firebaseio.com/v0/${route.params.stories}.json`);
     res = api.data;
     console.log(route.params.stories);
+};
+
+const commentHide = (index) => {
+    const obj = footerOption.value[index];
+    footerOption.value = [];
+    footerOption.value.push(obj);
+    commentShow.value = true;
+    arr.value = footerOption.value[0].kids;
 };
 
 watch(route, () => {
@@ -43,7 +53,7 @@ watch([currentPage, route], async () => {
     tempArr.forEach(async (id) => {
         try {
             obj.value = await axios.get(`https://hacker-news.firebaseio.com/v0/item/${id}.json`);
-            const {time , when} = timeCal(obj.value.data.time);
+            const { time, when } = timeCal(obj.value.data.time);
             footerOption.value.push({
                 title: `${obj.value.data.title}`,
                 score: `${obj.value.data.score}`,
@@ -83,13 +93,14 @@ function forwarPage() {
     <main class="par">
         <div>
             <div v-for="(item, index) in footerOption" :key="item.id" @click="random" v-show="!isLoading">
-                <!-- <Comment  :arr="footerOption[index].kids" :index="index" /> -->
                 <div class="card">
                     <div class="title">
-                        <a v-show="footerOption[index].url !== undefined" :href="footerOption[index].url" target="_blank"> {{
-                            footerOption[index].title
+                        <a v-show="footerOption[index].url !== undefined" :href="footerOption[index].url"
+                            target="_blank"> {{
+                                footerOption[index].title
                             }}</a>
-                        <p v-show="footerOption[index].url === undefined" class="titleBar"> {{ footerOption[index].title }}
+                        <p v-show="footerOption[index].url === undefined" class="titleBar"> {{ footerOption[index].title
+                            }}
                         </p>
                     </div>
                     <div class="footerOption">
@@ -97,10 +108,9 @@ function forwarPage() {
                         <div>{{ footerOption[index].slash }}</div>
                         <div>{{ footerOption[index].by }}</div>
                         <div>{{ footerOption[index].slash }}</div>
-                        <div v-show="footerOption[index].comments.length !== 0"
-                            >
-                            <RouterLink :to="`/${route.params.stories}/${item.id}/comment`">{{ footerOption[index].comments }}
-                            </RouterLink>
+                        <div v-show="footerOption[index].comments.length !== 0" @click="commentHide(index)">
+                           {{footerOption[index].comments }}
+    
                         </div>
                         <div v-show="footerOption[index].comments.length !== 0">{{ footerOption[index].slash }}</div>
                         <div>{{ footerOption[index].created }}</div>
@@ -141,6 +151,12 @@ function forwarPage() {
             </button>
         </div>
     </main>
+
+    <div v-if="commentShow">
+        <div class="Gap">
+            <nestedComment class="card" v-for="item in arr" :key="item" :commentId="item"/>
+        </div>
+    </div>
 </template>
 
 <style>
@@ -150,6 +166,7 @@ function forwarPage() {
     justify-content: space-between;
     width: 40%;
 }
+
 .card {
     display: flex;
     min-height: 95px;
@@ -209,5 +226,12 @@ a:active {
     align-items: center;
     margin-top: 20px;
     gap: 10px;
+}
+.nested {
+    margin-left: 20px;
+    margin-right: 0px;
+}
+.end{
+    cursor: pointer;
 }
 </style>
