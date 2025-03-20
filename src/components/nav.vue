@@ -4,7 +4,7 @@ import { ref } from 'vue';
 import store from './store/store';
 // const flag = ref([false,false,false,false,false,false]);
 const changeColor = (index)=>{
-    store.commit('setColor' , index);
+    store.dispatch('setColor' , index);
 };
 </script>
 

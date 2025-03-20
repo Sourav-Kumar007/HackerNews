@@ -10,9 +10,9 @@ import axios from 'axios';
 import Nav from './nav.vue';
 const Time = ref([]);
 const store = useStore();
-const comments = computed(() => store.state.kids);
-const index = computed(() => store.state.index);
-const footerOpt = computed(() => store.state.footerOpt);
+const comments = computed(() => store.getters.getKids);
+const index = computed(() => store.getters.getIndex);
+const footerOpt = computed(() => store.getters.getFooterOptions);
 
 watch(index, (newIndex) => {
     console.log("Index changed:", newIndex);

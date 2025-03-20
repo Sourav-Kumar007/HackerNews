@@ -5,6 +5,7 @@ id k call dibo ar comment gula arekta component e show korbo
 ar ekhane theke just comment er id ta pathay dibo -->
 
 <script setup>
+import { timeCal } from './composables/ time';
 import { useRoute } from 'vue-router';
 import { RouterLink } from 'vue-router';
 import Card from './Card.vue';
@@ -33,23 +34,23 @@ watch(route, () => {
 });
 watch([currentPage, route], async () => {
     console.log('eta teo dukse');
-    store.commit('setTrue');
+    store.dispatch('setTrue');
     await fetchApi();
-    store.commit('setFalse');
-    store.commit('setStory' , route.params.stories);
+    store.dispatch('setFalse');
+    store.dispatch('setStory' , route.params.stories);
     total.value = Math.ceil(res.length / 25);
     tempArr = res.slice(currentPage.value, currentPage.value + 25);
     footerOption.value = [];
     tempArr.forEach(async (id) => {
         try {
             obj.value = await axios.get(`https://hacker-news.firebaseio.com/v0/item/${id}.json`);
-            store.commit('timeCal', obj.value.data.time);
+            timeCal(obj.value.data.time);
             footerOption.value.push({
                 title: `${obj.value.data.title}`,
                 score: `${obj.value.data.score}`,
                 by: `by ${obj.value.data.by}`,
                 comments: obj.value.data.descendants !== undefined && obj.value.data.descendants !== 0 ? `${obj.value.data.descendants} Comments` : ``,
-                created: `Created ${store.state.time} ${store.state.when} ago`,
+                created: `Created ${store.getters.getTime} ${store.getters.getWhen} ago`,
                 slash: `|`,
                 url: obj.value.data.url,
                 kids: obj.value.data.kids === undefined ? [] : obj.value.data.kids,
@@ -59,15 +60,14 @@ watch([currentPage, route], async () => {
             console.error('error in fetching show.vue ', error);
         }
     });
-    store.commit('setopt', footerOption);
+    store.dispatch('setopt', footerOption);
+   
 }, { immediate: true });
 
 function backPage() {
     if (currentPage.value !== 0) {
         currentPage.value -= 25;
         curr.value = Math.floor(currentPage.value / 25) + 1;
-        console.log('back currpage ', currentPage.value);
-        console.log('back currcnt ', curr.value);
     }
 }
 
