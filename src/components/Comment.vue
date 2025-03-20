@@ -2,28 +2,36 @@
 comment thakbe segular id store hoye thakbe -->
 
 <script setup>
+import { defineProps } from 'vue';
 import nestedComment from './nestedComment.vue';
-import { useStore } from 'vuex';
 import { computed, onMounted, ref } from 'vue';
 import { watch } from 'vue';
 import axios from 'axios';
 import Nav from './nav.vue';
 const Time = ref([]);
-const store = useStore();
-const comments = computed(() => store.state.kids);
-const index = computed(() => store.state.index);
-const footerOpt = computed(() => store.state.footerOpt);
+// const store = useStore();
+// const comments = computed(() => store.getters.getKids);
+// const index = computed(() => store.getters.getIndex);
+// const footerOpt = computed(() => store.getters.getFooterOptions);
 
-watch(index, (newIndex) => {
-    console.log("Index changed:", newIndex);
+// watch(index, (newIndex) => {
+//     console.log("Index changed:", newIndex);
+// });
+
+const props = defineProps({
+    arr: Array,
+    index: Number,
+    footerOpt: {
+    type: Array,
+    default: () => []
+  }
 });
-
-
 </script>
 
 <template>
-    <Nav />
-    <div class="upore">
+haha
+    <div>
+        <!-- <div class="upore">
         <div class="card"  v-if="footerOpt[index]">
                 <div class="title">
                     <a v-show="footerOpt[index].url !== undefined" :href="footerOpt[index].url" target="_blank" > {{ footerOpt[index].title
@@ -38,22 +46,24 @@ watch(index, (newIndex) => {
                     <div>{{ footerOpt[index].created }}</div>
                 </div>
             </div>
-    </div>
+    </div> -->
     <br>
 
     <main>
         <div class="Gap">
-            <nestedComment class="card" v-for="item in comments" :key="item" :commentId="item"/>
+            <nestedComment class="card" v-for="item in arr" :key="item" :commentId="item"/>
         </div>
     </main>
+    </div>
 </template>
 
 
 <style >
-.upore{
-    width:65%;
-    margin:0 auto;
+.upore {
+    width: 65%;
+    margin: 0 auto;
 }
+
 .card {
     display: flex;
     min-height: 120px;
@@ -69,12 +79,14 @@ watch(index, (newIndex) => {
     border: 2px solid transparent;
     margin-right: 0px;
 }
-.Gap{
-    display: flex;  
-    flex-direction: column;  
-    gap: 5px; 
+
+.Gap {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
 }
-.top{
+
+.top {
     display: flex;
     width: 30%;
     justify-content: space-between;

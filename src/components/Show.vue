@@ -5,14 +5,15 @@ id k call dibo ar comment gula arekta component e show korbo
 ar ekhane theke just comment er id ta pathay dibo -->
 
 <script setup>
+import Comment from './Comment.vue';
+import { timeCal } from './composables/usetime';
 import { useRoute } from 'vue-router';
+import { commentId } from './composables/usetime';
 import { RouterLink } from 'vue-router';
-import Card from './Card.vue';
 import Nav from './nav.vue';
 import axios from 'axios';
-import { onMounted, ref, watch } from 'vue';
+import { onMounted, ref, watch , computed} from 'vue';
 import { useStore } from 'vuex';
-const store = useStore();
 let res, tempArr;
 const obj = ref({});
 const currentPage = ref(0);
@@ -20,6 +21,7 @@ const route = useRoute();
 const footerOption = ref([]);
 const curr = ref(1);
 const total = ref(0);
+const isLoading = ref(true);
 
 const fetchApi = async () => {
     const api = await axios.get(`https://hacker-news.firebaseio.com/v0/${route.params.stories}.json`);
@@ -32,24 +34,22 @@ watch(route, () => {
     curr.value = 1;
 });
 watch([currentPage, route], async () => {
-    console.log('eta teo dukse');
-    store.commit('setTrue');
+    isLoading.value = true;
     await fetchApi();
-    store.commit('setFalse');
-    store.commit('setStory' , route.params.stories);
+    isLoading.value = false;
     total.value = Math.ceil(res.length / 25);
     tempArr = res.slice(currentPage.value, currentPage.value + 25);
     footerOption.value = [];
     tempArr.forEach(async (id) => {
         try {
             obj.value = await axios.get(`https://hacker-news.firebaseio.com/v0/item/${id}.json`);
-            store.commit('timeCal', obj.value.data.time);
+            const {time , when} = timeCal(obj.value.data.time);
             footerOption.value.push({
                 title: `${obj.value.data.title}`,
                 score: `${obj.value.data.score}`,
                 by: `by ${obj.value.data.by}`,
                 comments: obj.value.data.descendants !== undefined && obj.value.data.descendants !== 0 ? `${obj.value.data.descendants} Comments` : ``,
-                created: `Created ${store.state.time} ${store.state.when} ago`,
+                created: `Created ${time} ${when} ago`,
                 slash: `|`,
                 url: obj.value.data.url,
                 kids: obj.value.data.kids === undefined ? [] : obj.value.data.kids,
@@ -59,15 +59,12 @@ watch([currentPage, route], async () => {
             console.error('error in fetching show.vue ', error);
         }
     });
-    store.commit('setopt', footerOption);
 }, { immediate: true });
 
 function backPage() {
     if (currentPage.value !== 0) {
         currentPage.value -= 25;
         curr.value = Math.floor(currentPage.value / 25) + 1;
-        console.log('back currpage ', currentPage.value);
-        console.log('back currcnt ', curr.value);
     }
 }
 
@@ -85,7 +82,56 @@ function forwarPage() {
     <br>
     <main class="par">
         <div>
-            <Card />
+            <div v-for="(item, index) in footerOption" :key="item.id" @click="random" v-show="!isLoading">
+                <!-- <Comment  :arr="footerOption[index].kids" :index="index" /> -->
+                <div class="card">
+                    <div class="title">
+                        <a v-show="footerOption[index].url !== undefined" :href="footerOption[index].url" target="_blank"> {{
+                            footerOption[index].title
+                            }}</a>
+                        <p v-show="footerOption[index].url === undefined" class="titleBar"> {{ footerOption[index].title }}
+                        </p>
+                    </div>
+                    <div class="footerOption">
+                        <div>{{ footerOption[index].score }}</div>
+                        <div>{{ footerOption[index].slash }}</div>
+                        <div>{{ footerOption[index].by }}</div>
+                        <div>{{ footerOption[index].slash }}</div>
+                        <div v-show="footerOption[index].comments.length !== 0"
+                            >
+                            <RouterLink :to="`/${route.params.stories}/${item.id}/comment`">{{ footerOption[index].comments }}
+                            </RouterLink>
+                        </div>
+                        <div v-show="footerOption[index].comments.length !== 0">{{ footerOption[index].slash }}</div>
+                        <div>{{ footerOption[index].created }}</div>
+                    </div>
+                </div>
+            </div>
+            <div v-for="x in 25" v-show="isLoading" class="card">
+                <div>
+                    <h3>Loading...</h3>
+                </div>
+
+                <div class="loadTop">
+                    <div>
+                        Loading...
+                    </div>
+                    <div>
+                        |
+                    </div>
+                    <div>
+                        Loading...
+                    </div>
+                    <div>
+                        |
+                    </div>
+                    <div>
+                        Loading...
+                    </div>
+                </div>
+
+            </div>
+            <!-- Card shes -->
         </div>
         <div class="btn">
             <button @click="backPage"> <i class="fa fa-arrow-circle-left" style="font-size:35px;color:red"></i>
@@ -98,6 +144,12 @@ function forwarPage() {
 </template>
 
 <style>
+.loadTop {
+    display: flex;
+    flex-direction: colum;
+    justify-content: space-between;
+    width: 40%;
+}
 .card {
     display: flex;
     min-height: 95px;
@@ -115,7 +167,7 @@ function forwarPage() {
     font-weight: 400;
 }
 
-.footerOpt {
+.footerOption {
     width: 68%;
     display: flex;
     flex-direction: row;

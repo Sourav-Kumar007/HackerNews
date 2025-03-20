@@ -1,6 +1,5 @@
 <script setup>
 import axios from 'axios';
-import store from './store/store';
 import { defineProps, ref } from 'vue';
 const props = defineProps({ commentId: Number });
 const commentInfo = ref({});
@@ -11,7 +10,7 @@ const fetchData = async () => {
     try{
         const res = await axios.get(`https://hacker-news.firebaseio.com/v0/item/${props.commentId}.json`);
     commentInfo.value = res.data;
-    store.commit('timeCal' , res.data.time);
+    // store.commit('timeCal' , res.data.time);
     flag.value = false;
     }catch(error){
         console.error('Error fetching data: ' , error);
@@ -38,7 +37,7 @@ const toggleComments = async()=>{
 </script>
 
 <template>
-    <div>
+    <!-- <div>
         <div class="top">
             <div v-if="!flag"> by {{ commentInfo.by}}</div>
             <div v-if="flag"> Loading... </div>
@@ -56,11 +55,11 @@ const toggleComments = async()=>{
         <div v-if="showKids" class="nested">
             <nestedComment class="card" v-for="item in kids" :key="item" :commentId="item"/>
         </div>
-    </div>
+    </div> -->
 
 </template>
 
-<style>
+<style scoped>
 .nested {
     margin-left: 20px;
     margin-right: 0px;
