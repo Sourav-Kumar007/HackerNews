@@ -1,0 +1,27 @@
+name.js --> 
+import { ref, onMounted } from "vue";
+
+export function useName() {
+  const x = 100;
+  const y = 78;
+
+  const z = x + y;
+  return {x , z};
+}
+
+recursion.vue --> 
+<script setup>
+import { defineProps, onMounted, ref } from 'vue';
+import { useName } from './name'; 
+const {x , z} = useName();
+//  ekhane variable name ta must same hote hobe
+// const {x : a, z : b} amra chaile evabe rename korte pari 
+
+</script>
+
+<template>
+    
+   <p>{{ x}}{{ z }} </p>
+</template>
+
+
