@@ -6,7 +6,7 @@ ar ekhane theke just comment er id ta pathay dibo -->
 
 <script setup>
 import nestedComment from './nestedComment.vue';
-import Comment from './Comment.vue';
+
 import { timeCal } from './composables/usetime';
 import { useRoute } from 'vue-router';
 import { commentId } from './composables/usetime';
@@ -37,13 +37,18 @@ const commentHide = (index) => {
     footerOption.value.push(obj);
     commentShow.value = true;
     arr.value = footerOption.value[0].kids;
+    console.log('nested comment show korte hbe ');
 };
 
 watch(route, () => {
-    console.log('dukse');
+    
     curr.value = 1;
+    commentHide.value = false;
+    console.log('dukse watcher e ' , commentHide.value);
 });
 watch([currentPage, route], async () => {
+    arr.value = [];
+    commentHide.value = false;
     isLoading.value = true;
     await fetchApi();
     isLoading.value = false;
@@ -100,7 +105,7 @@ function forwarPage() {
                                 footerOption[index].title
                             }}</a>
                         <p v-show="footerOption[index].url === undefined" class="titleBar"> {{ footerOption[index].title
-                            }}
+                        }}
                         </p>
                     </div>
                     <div class="footerOption">
@@ -108,9 +113,9 @@ function forwarPage() {
                         <div>{{ footerOption[index].slash }}</div>
                         <div>{{ footerOption[index].by }}</div>
                         <div>{{ footerOption[index].slash }}</div>
-                        <div v-show="footerOption[index].comments.length !== 0" @click="commentHide(index)">
-                           {{footerOption[index].comments }}
-    
+                        <div v-show="footerOption[index].comments.length !== 0" @click="commentHide(index)" class="end">
+                           {{ footerOption[index].comments }} 
+
                         </div>
                         <div v-show="footerOption[index].comments.length !== 0">{{ footerOption[index].slash }}</div>
                         <div>{{ footerOption[index].created }}</div>
@@ -152,9 +157,9 @@ function forwarPage() {
         </div>
     </main>
 
-    <div v-if="commentShow">
-        <div class="Gap">
-            <nestedComment class="card" v-for="item in arr" :key="item" :commentId="item"/>
+    <div v-if="commentShow"> 
+        <div class="Card">
+            <nestedComment class="hard" v-for="item in arr" :key="item" :commentId="item" />
         </div>
     </div>
 </template>
@@ -227,11 +232,36 @@ a:active {
     margin-top: 20px;
     gap: 10px;
 }
+
 .nested {
     margin-left: 20px;
     margin-right: 0px;
 }
-.end{
+
+.end {
     cursor: pointer;
+}
+
+.hard {
+    display: flex;
+    width:65%;
+    min-height: 120px;
+    overflow: hidden;
+    box-shadow: 2px 4px 8px 0 rgba(0, 0, 0, 0.2);
+    transition: .1s;
+    background-color: #F9FAFA;
+    flex-direction: column;
+    justify-content: space-evenly;
+    gap: 20px;
+    box-sizing: border-box;
+    padding: 10px;
+    border: 2px solid transparent;
+    margin-right: 0px;
+    margin: 0 auto;
+}
+.top{
+    display: flex;
+    width: 30%;
+    justify-content: space-between;
 }
 </style>
