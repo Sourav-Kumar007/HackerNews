@@ -1,26 +1,25 @@
 <script setup>
 import { RouterLink,RouterView } from 'vue-router';
 import { ref } from 'vue';
-import store from './store/store';
-// const flag = ref([false,false,false,false,false,false]);
-const changeColor = (index)=>{
-    store.commit('setColor' , index);
-};
+
+// const changeColor = (index)=>{
+//     store.commit('setColor' , index);
+// };
 </script>
 
 <template>
     <div class="container">
        <div class="head">
         <header>
-            <div class="headerContent" @click="changeColor(0)" :class="store.state.flag[0] ? 'bg' : ''">
+            <div class="headerContent">
                 <RouterLink to="/topstories"> HackerNews </RouterLink>
             </div>
             <div class="options">
-                <div @click="changeColor(1)" :class="store.state.flag[1] ? 'bg' : ''"><RouterLink to="/newstories"> New </RouterLink></div>
-                <div @click="changeColor(2)" :class="store.state.flag[2] ? 'bg' : ''"><RouterLink to="/beststories"> Best </RouterLink></div>
-                <div @click="changeColor(3)" :class="store.state.flag[3] ? 'bg' : ''"><RouterLink to="/showstories"> Show </RouterLink></div>
-                <div @click="changeColor(4)" :class="store.state.flag[4] ? 'bg' : ''"><RouterLink to="/askstories"> Ask </RouterLink></div>
-                <div @click="changeColor(5)" :class="store.state.flag[5] ? 'bg' : ''"><RouterLink to="/jobstories"> Job </RouterLink></div>
+                <div ><a href="/newstories"> New </a></div>
+                <div ><a href="/beststories" > Best </a></div>
+                <div ><a href="/showstories"> Show </a></div>
+                <div ><a href="/askstories"> Ask </a></div>
+                <div ><a href="/jobstories"> Job </a></div>
             </div>
         </header>
        </div>
