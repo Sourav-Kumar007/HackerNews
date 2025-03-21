@@ -15,11 +15,11 @@ import { ref } from 'vue';
                 <RouterLink to="/topstories"> HackerNews </RouterLink>
             </div>
             <div class="options">
-                <div ><RouterLink to="/newstories"> New </RouterLink></div>
-                <div ><RouterLink to="/beststories"> Best </RouterLink></div>
-                <div ><RouterLink to="/showstories"> Show </RouterLink></div>
-                <div ><RouterLink to="/askstories"> Ask </RouterLink></div>
-                <div ><RouterLink to="/jobstories"> Job </RouterLink></div>
+                <div ><a href="/newstories"> New </a></div>
+                <div ><a href="/beststories" > Best </a></div>
+                <div ><a href="/showstories"> Show </a></div>
+                <div ><a href="/askstories"> Ask </a></div>
+                <div ><a href="/jobstories"> Job </a></div>
             </div>
         </header>
        </div>
