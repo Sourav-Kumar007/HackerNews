@@ -1,8 +1,4 @@
-<!-- ekhane amra je id ta pacchi seta story er ,
-ekhon amra ei id theke oi particular story er 
-sob comment pabo, then amra prottek ta comment er
-id k call dibo ar comment gula arekta component e show korbo
-ar ekhane theke just comment er id ta pathay dibo -->
+ <!-- typescript add korte hobe -->
 
 <script setup>
 import nestedComment from './nestedComment.vue';
