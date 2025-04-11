@@ -1,0 +1,33 @@
+App.vue --> 
+<template>
+<temp :dataSetsLegend="arr" :haha="199"/>
+</template>
+<script setup lang="ts">
+import temp from './temp.vue';
+const arr = ['sourav' , 'kumar'];
+</script>
+
+temp.vue -->
+<template>
+    <ul>
+      <li v-for="(legend, index) in props.dataSetsLegend" :key="index">
+        {{ legend }}
+      </li>
+    </ul> 
+    <h1> Temp </h1>
+    {{ haha }}
+  </template>
+  
+  <script setup lang="ts">
+  interface Props {
+    dataSetsLegend: string[],
+    haha : number,
+  }
+  
+  const props = withDefaults(defineProps<Props>(), {
+    dataSetsLegend: [],
+    haha : 45,
+  });
+  </script>
+  
+  
